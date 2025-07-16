@@ -1,3 +1,56 @@
+@import "notifyadjusts.css";
+@import "sweetalert2.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Remove blue highlight on active (click and hold) */
+input[type="checkbox"]:active {
+    box-shadow: 0 0 0 2px #a5b4fc00; /* transparent */
+    border-color: #406d3d;
+}
+
+input[type="checkbox"]:checked:hover {
+    border-color: black;
+    box-shadow: 0 0 0 2px gray;
+    background-color: #406d3d;
+}
+
+
+input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    background-color: #fff;
+    border: 2px solid #4f7e4f;
+    width: 20px;
+    height: 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+    position: relative;
+    outline: none;
+}
+
+input[type="checkbox"]:checked {
+    background-color: #406d3d;
+    border-color: #4f7e4f
+}
+
+input[type="checkbox"]:checked::after {
+    content: '';
+    position: absolute;
+    left: 5px;
+    top: 2px;
+    width: 6px;
+    height: 12px;
+    border: solid #fff;
+    border-width: 0 3px 3px 0;
+    transform: rotate(45deg);
+    display: block;
+}
+
+input[type="checkbox"]:focus {
+    box-shadow: 0 0 0 2px #a5b4fc;
+    border-color: #406d3d;
+}

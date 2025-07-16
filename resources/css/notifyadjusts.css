@@ -1,0 +1,44 @@
+#laravel-notify .notify {
+    z-index: 9999;
+    top: 10%;
+}
+
+#laravel-notify .bg-slate-800 {
+    background-color: #eeeded;
+    color: black;
+    border-bottom: 0.5px solid #aaaaaa;
+    border-top: 0.5px solid #aaaaaa;
+    border-right: 0.5px solid #aaaaaa;
+}
+
+#laravel-notify .bg-slate-800:is(.dark *) {
+    background-color: #18181b !important;
+    border-bottom: 0.5px solid #292d3e;
+    border-top: 0.5px solid #292d3e;
+    border-right: 0.5px solid #292d3e;
+}
+
+#laravel-notify .text-white {
+    color: black;
+}
+
+#laravel-notify .bg-slate-800:is(.dark *) {
+    background-color: #111727;
+    color: black;
+}
+
+#laravel-notify .text-white:is(.dark *) {
+    color: #ffffff;
+}
+
+#laravel-notify .text-slate-400:hover {
+    transition-duration: 0.5s;
+    color: white;
+    background-color: rgba(124, 123, 123, 0.6);
+}
+
+#laravel-notify .text-slate-400:is(.dark *):hover {
+    transition-duration: 0.5s;
+    color: white;
+    background-color: #374151;
+}

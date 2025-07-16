@@ -1,0 +1,24 @@
+.swal2-confirm {
+    background-color: #03543f !important;
+    color: white !important;
+}
+
+.swal2-cancel {
+    background-color: #bd1313 !important;
+    color: white !important;
+}
+
+.swal2-popup:is(.dark *) {
+    background-color: #18181b !important;
+    color: #c0bebe !important;
+    border: 1px solid #686868;
+}
+
+div:where(.swal2-container) div:where(.swal2-validation-message) {
+    color: rgb(0, 0, 0) !important;
+}
+
+div:where(.swal2-container):is(.dark *) div:where(.swal2-validation-message):is(.dark *) {
+    background: #374151 !important;
+    color: white !important;
+}
