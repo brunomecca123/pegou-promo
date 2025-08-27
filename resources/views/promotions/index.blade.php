@@ -2,40 +2,40 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <!-- Header com estatísticas -->
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
-                <div class="p-6 text-gray-900">
+            <x-cards.card>
+                <div class="p-6">
                     <div class="flex justify-between items-center mb-6">
                         <h2 class="text-2xl font-bold">Gerenciamento de Promoções</h2>
-                        <button id="scrapeBtn" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        <button id="scrapeBtn" class="bg-info hover:bg-infoHover text-white font-bold py-2 px-4 rounded">
                             🔍 Buscar Novas Promoções
                         </button>
                     </div>
 
                     <!-- Estatísticas -->
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-                        <div class="bg-blue-100 p-4 rounded-lg">
-                            <div class="text-2xl font-bold text-blue-600">{{ $stats['total'] ?? 0 }}</div>
-                            <div class="text-sm text-gray-600">Total</div>
+                        <div class="bg-blue-100 dark:bg-blue-900 p-4 rounded-lg">
+                            <div class="text-2xl font-bold text-blue-700 dark:text-blue-200">{{ $stats['total'] ?? 0 }}</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-300">Total</div>
                         </div>
-                        <div class="bg-yellow-100 p-4 rounded-lg">
-                            <div class="text-2xl font-bold text-yellow-600">{{ $stats['pending'] ?? 0 }}</div>
-                            <div class="text-sm text-gray-600">Pendentes</div>
+                        <div class="bg-yellow-100 dark:bg-yellow-900 p-4 rounded-lg">
+                            <div class="text-2xl font-bold text-yellow-700 dark:text-yellow-200">{{ $stats['pending'] ?? 0 }}</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-300">Pendentes</div>
                         </div>
-                        <div class="bg-green-100 p-4 rounded-lg">
-                            <div class="text-2xl font-bold text-green-600">{{ $stats['posted'] ?? 0 }}</div>
-                            <div class="text-sm text-gray-600">Publicadas</div>
+                        <div class="bg-green-100 dark:bg-green-900 p-4 rounded-lg">
+                            <div class="text-2xl font-bold text-green-700 dark:text-green-200">{{ $stats['posted'] ?? 0 }}</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-300">Publicadas</div>
                         </div>
-                        <div class="bg-purple-100 p-4 rounded-lg">
-                            <div class="text-2xl font-bold text-purple-600">{{ $stats['today'] ?? 0 }}</div>
-                            <div class="text-sm text-gray-600">Hoje</div>
+                        <div class="bg-purple-100 dark:bg-purple-900 p-4 rounded-lg">
+                            <div class="text-2xl font-bold text-purple-700 dark:text-purple-200">{{ $stats['today'] ?? 0 }}</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-300">Hoje</div>
                         </div>
                     </div>
 
                     <!-- Filtros -->
-                    <div class="bg-gray-50 p-4 rounded-lg mb-6">
+                    <div class="border border-gray-500 p-4 rounded-lg mb-6">
                         <form method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-4">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">Status</label>
+                                <label class="block text-sm font-medium">Status</label>
                                 <select name="status" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
                                     <option value="">Todos</option>
                                     <option value="draft" {{ request('status') == 'draft' ? 'selected' : '' }}>Rascunho</option>
@@ -46,13 +46,13 @@
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">Loja</label>
+                                <label class="block text-sm font-medium ">Loja</label>
                                 <input type="text" name="store" value="{{ request('store') }}"
                                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
                                        placeholder="Nome da loja">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">Categoria</label>
+                                <label class="block text-sm font-medium ">Categoria</label>
                                 <select name="category" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
                                     <option value="">Todas</option>
                                     <option value="eletrônicos" {{ request('category') == 'eletrônicos' ? 'selected' : '' }}>Eletrônicos</option>
@@ -63,21 +63,21 @@
                                 </select>
                             </div>
                             <div class="flex items-end">
-                                <button type="submit" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mr-2">
+                                <button type="submit" class="!bg-success hover:!bg-successHover text-white font-bold py-2 px-4 rounded mr-2">
                                     Filtrar
                                 </button>
-                                <a href="{{ route('promotions.index') }}" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded">
+                                <a href="{{ route('promotions.index') }}" class="!bg-danger hover:!bg-dangerHover text-white font-bold py-2 px-4 rounded">
                                     Limpar
                                 </a>
                             </div>
                         </form>
                     </div>
                 </div>
-            </div>
+            </x-cards.card>
 
             <!-- Lista de Promoções -->
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
+            <x-cards.card class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6">
                     @if($promotions->count() > 0)
                         <div class="space-y-4">
                             @foreach($promotions as $promotion)
@@ -146,7 +146,7 @@
                                                     </button>
                                                 @endif
 
-                                                <button class="regenerate-btn bg-blue-500 hover:bg-blue-700 text-white text-sm font-bold py-1 px-3 rounded"
+                                                <button class="regenerate-btn bg-info hover:bg-infoHover text-white text-sm font-bold py-1 px-3 rounded"
                                                         data-promotion-id="{{ $promotion->id }}">
                                                     🔄 Regenerar Post
                                                 </button>
@@ -179,13 +179,13 @@
                     @else
                         <div class="text-center py-8">
                             <p class="text-gray-500 text-lg">Nenhuma promoção encontrada.</p>
-                            <button id="scrapeBtn2" class="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                            <button id="scrapeBtn2" class="mt-4 bg-info hover:bg-infoHover text-white font-bold py-2 px-4 rounded">
                                 🔍 Buscar Promoções
                             </button>
                         </div>
                     @endif
                 </div>
-            </div>
+            </x-cards.card>
         </div>
     </div>
 
@@ -222,7 +222,7 @@
                         <button type="button" id="cancelScrape" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded">
                             Cancelar
                         </button>
-                        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        <button type="submit" class="bg-info hover:bg-infoHover text-white font-bold py-2 px-4 rounded">
                             Buscar
                         </button>
                     </div>
@@ -250,7 +250,6 @@
             scrapeModal.classList.add('hidden');
         });
 
-        // Submissão do form de scrapping
         scrapeForm.addEventListener('submit', async (e) => {
             e.preventDefault();
 
