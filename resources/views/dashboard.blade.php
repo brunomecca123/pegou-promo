@@ -1,6 +1,17 @@
 <x-app-layout>
     <x-cards.card>
-        <h2 class="text-lg font-bold mb-4">Produtos em Promoção</h2>
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-lg font-bold">Produtos em Promoção</h2>
+            <div class="space-x-2">
+                <a href="{{ route('promotions.index') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    📋 Gerenciar Promoções
+                </a>
+                <a href="/test-scraping" target="_blank" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                    🧪 Testar Scraping
+                </a>
+            </div>
+        </div>
+
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <!-- Card 1 -->
             <div class="border rounded-lg p-4 flex">

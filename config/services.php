@@ -40,4 +40,16 @@ return [
         'channel_id' => env('TELEGRAM_CHANNEL_ID'),
     ],
 
+    'gemini' => [
+        'api_key' => env('GEMINI_API_KEY'),
+        'model' => env('GEMINI_MODEL', 'gemini-2.0-flash-exp'),
+    ],
+
+    'amazon' => [
+        'affiliate_tag' => env('AMAZON_AFFILIATE_TAG'),
+        'access_key' => env('AMAZON_ACCESS_KEY'),
+        'secret_key' => env('AMAZON_SECRET_KEY'),
+        'region' => env('AMAZON_REGION', 'us-east-1'),
+    ],
+
 ];

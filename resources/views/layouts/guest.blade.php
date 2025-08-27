@@ -21,8 +21,7 @@
     style="background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('/imagens/foto-terminal.png'); background-size: cover; background-position: center;">
     <div
         class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100 dark:bg-bodybg bg-opacity-0">
-        <div class="bg-[#406d3d] p-5 rounded-lg text-white mb-10 shadow-lg border-[#396136] hover:bg-[#396136]">Portal
-            de Sincronização de Notas</div>
+        <div class="bg-primary p-5 rounded-lg text-white mb-10 shadow-lg border-primary hover:bg-primary">Gerenciador do Pegou Promo</div>
         <div>
             <a href="/">
                 <img src="{{ asset('imagens/logo-pegou-promo.png') }}" alt="Logo"
