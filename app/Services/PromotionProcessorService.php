@@ -117,8 +117,18 @@ class PromotionProcessorService
             // 2. Obter detalhes completos da promoção
             if (!empty($promotionData['source_url'])) {
                 $details = $this->promobitScrapper->getPromotionDetails($promotionData['source_url']);
-                if ($details && !empty($details['direct_url'])) {
-                    $promotionData['url'] = $details['direct_url'];
+                if ($details) {
+                    // Usar o link da Amazon se encontrado, senão usar o direct_url
+                    if (!empty($details['amazon_url'])) {
+                        $promotionData['url'] = $details['amazon_url'];
+                        Log::info('Link da Amazon encontrado via redirecionamento', [
+                            'source_url' => $promotionData['source_url'],
+                            'amazon_url' => $details['amazon_url']
+                        ]);
+                    } elseif (!empty($details['direct_url'])) {
+                        $promotionData['url'] = $details['direct_url'];
+                    }
+
                     if (!empty($details['full_description'])) {
                         $promotionData['description'] = $details['full_description'];
                     }
@@ -127,7 +137,15 @@ class PromotionProcessorService
 
             // 3. Gerar link de afiliado (se for Amazon)
             if (!empty($promotionData['url'])) {
-                $promotionData['affiliate_url'] = $this->amazonService->generateAffiliateLink($promotionData['url']);
+                $affiliateUrl = $this->amazonService->generateAffiliateLink($promotionData['url']);
+                if ($affiliateUrl !== $promotionData['url']) {
+                    $promotionData['affiliate_url'] = $affiliateUrl;
+                    Log::info('Link de afiliado gerado', [
+                        'original_url' => $promotionData['url'],
+                        'affiliate_url' => $affiliateUrl,
+                        'title' => $promotionData['title']
+                    ]);
+                }
             }
 
             // 4. Gerar post com IA

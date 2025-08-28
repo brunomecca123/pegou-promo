@@ -859,27 +859,139 @@ class PromobitScrapperService
 
             $xpath = new \DOMXPath($dom);
 
-            // Extrair link direto para o produto
-            $linkNodes = $xpath->query("//a[contains(@class, 'offer-link') or contains(@class, 'btn-offer')]");
-            $directUrl = '';
+            // Procurar pelo botão "Ir à loja" que contém o link de redirecionamento
+            $linkSelectors = [
+                "//a[contains(text(), 'Ir à loja')]",
+                "//a[contains(@class, 'offer-link')]",
+                "//a[contains(@class, 'btn-offer')]",
+                "//a[contains(@class, 'go-to-store')]",
+                "//a[contains(@href, '/Redirect/to/')]"
+            ];
 
-            if ($linkNodes->length > 0) {
-                $directUrl = $linkNodes->item(0)->getAttribute('href');
+            $redirectUrl = '';
+            foreach ($linkSelectors as $selector) {
+                $linkNodes = $xpath->query($selector);
+                if ($linkNodes->length > 0) {
+                    $redirectUrl = $linkNodes->item(0)->getAttribute('href');
+                    if (!empty($redirectUrl)) {
+                        break;
+                    }
+                }
             }
 
-            // Extrair mais detalhes se necessário
+            // Se encontrou URL de redirecionamento, seguir o redirecionamento
+            $finalUrl = '';
+            if (!empty($redirectUrl)) {
+                $finalUrl = $this->followRedirectToAmazon($redirectUrl);
+            }
+
+            // Extrair descrição completa
             $descriptionNodes = $xpath->query("//div[contains(@class, 'thread-description')]");
             $fullDescription = $descriptionNodes->length > 0 ?
                 trim($descriptionNodes->item(0)->textContent) : '';
 
             return [
-                'direct_url' => $directUrl,
+                'direct_url' => $finalUrl ?: $redirectUrl,
+                'amazon_url' => $finalUrl,
+                'redirect_url' => $redirectUrl,
                 'full_description' => $fullDescription
             ];
 
         } catch (\Exception $e) {
             Log::error('Erro ao obter detalhes da promoção: ' . $e->getMessage());
             return null;
+        }
+    }
+
+    /**
+     * Segue redirecionamentos do Promobit até encontrar o link da Amazon
+     */
+    protected function followRedirectToAmazon($redirectUrl)
+    {
+        try {
+            Log::info('Seguindo redirecionamento para encontrar Amazon', ['redirect_url' => $redirectUrl]);
+
+            // Se a URL não for absoluta, fazer absoluta
+            if (strpos($redirectUrl, 'http') !== 0) {
+                $redirectUrl = $this->baseUrl . $redirectUrl;
+            }
+
+            $response = Http::withHeaders([
+                'User-Agent' => $this->userAgent
+            ])->withOptions([
+                'curl' => [
+                    CURLOPT_FOLLOWLOCATION => false, // Não seguir automaticamente
+                    CURLOPT_SSL_VERIFYPEER => false,
+                    CURLOPT_SSL_VERIFYHOST => false,
+                    CURLOPT_HEADER => true,
+                    CURLOPT_NOBODY => true, // Só pegar headers
+                ]
+            ])->timeout(10)->get($redirectUrl);
+
+            // Seguir manualmente os redirecionamentos até encontrar Amazon
+            $currentUrl = $redirectUrl;
+            $maxRedirects = 5;
+            $redirectCount = 0;
+
+            while ($redirectCount < $maxRedirects) {
+                $response = Http::withHeaders([
+                    'User-Agent' => $this->userAgent
+                ])->withOptions([
+                    'curl' => [
+                        CURLOPT_FOLLOWLOCATION => false,
+                        CURLOPT_SSL_VERIFYPEER => false,
+                        CURLOPT_SSL_VERIFYHOST => false,
+                    ]
+                ])->timeout(10)->get($currentUrl);
+
+                // Verificar se chegamos na Amazon
+                if (str_contains(strtolower($currentUrl), 'amazon')) {
+                    Log::info('URL da Amazon encontrada', ['amazon_url' => $currentUrl]);
+                    return $currentUrl;
+                }
+
+                // Procurar por header de redirecionamento
+                $locationHeader = $response->header('Location');
+                if (!empty($locationHeader)) {
+                    $currentUrl = $locationHeader;
+                    $redirectCount++;
+                    Log::info('Redirecionamento detectado', ['redirect_to' => $currentUrl]);
+                } else {
+                    // Se não há mais redirecionamentos, parar
+                    break;
+                }
+            }
+
+            // Se não encontrou Amazon nos redirecionamentos, verificar no corpo da resposta
+            if (!str_contains(strtolower($currentUrl), 'amazon')) {
+                $bodyResponse = Http::withHeaders([
+                    'User-Agent' => $this->userAgent
+                ])->timeout(10)->get($currentUrl);
+
+                if ($bodyResponse->successful()) {
+                    $body = $bodyResponse->body();
+
+                    // Procurar por links da Amazon no HTML
+                    if (preg_match('/href=["\']([^"\']*amazon[^"\']*)["\']/', $body, $matches)) {
+                        $amazonUrl = $matches[1];
+                        Log::info('URL da Amazon encontrada no HTML', ['amazon_url' => $amazonUrl]);
+                        return $amazonUrl;
+                    }
+
+                    // Procurar por JavaScript redirect
+                    if (preg_match('/window\.location[.\s]*=[.\s]*["\']([^"\']*amazon[^"\']*)["\']/', $body, $matches)) {
+                        $amazonUrl = $matches[1];
+                        Log::info('URL da Amazon encontrada em JavaScript', ['amazon_url' => $amazonUrl]);
+                        return $amazonUrl;
+                    }
+                }
+            }
+
+            return $currentUrl;
+
+        } catch (\Exception $e) {
+            Log::error('Erro ao seguir redirecionamento: ' . $e->getMessage());
+            return '';
         }
     }
 }

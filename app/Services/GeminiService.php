@@ -88,43 +88,82 @@ class GeminiService
             $prompt .= "• Categoria: {$promotion['category']}\n";
         }
 
+        // Incluir link de afiliado se disponível
+        if (isset($promotion['affiliate_url']) && !empty($promotion['affiliate_url'])) {
+            $prompt .= "• Link de Compra: {$promotion['affiliate_url']}\n";
+        } elseif (isset($promotion['url']) && !empty($promotion['url'])) {
+            $prompt .= "• Link de Compra: {$promotion['url']}\n";
+        }
+
         $prompt .= "\nCRIE UM POST ATRATIVO SEGUINDO ESTAS DIRETRIZES:\n\n";
         
         $prompt .= "🎯 ESTRUTURA OBRIGATÓRIA:\n";
         $prompt .= "1. TÍTULO CHAMATIVO com emoji relevante\n";
         $prompt .= "2. DESTAQUE DO DESCONTO (se houver)\n";
         $prompt .= "3. CARACTERÍSTICAS PRINCIPAIS do produto (máximo 3 pontos)\n";
-        $prompt .= "4. CALL TO ACTION motivador\n";
-        $prompt .= "5. HASHTAGS relevantes (máximo 3)\n\n";
+        $prompt .= "4. LINK DE COMPRA (use o link fornecido acima)\n";
+        $prompt .= "5. CALL TO ACTION motivador\n";
+        $prompt .= "6. HASHTAGS relevantes (máximo 3)\n\n";
         
         $prompt .= "📝 REGRAS DE ESCRITA:\n";
         $prompt .= "• Use linguagem informal e entusiasmada\n";
-        $prompt .= "• Máximo 200 caracteres\n";
+        $prompt .= "• Máximo 300 caracteres (sem contar o link)\n";
         $prompt .= "• Use emojis estrategicamente (não exagere)\n";
         $prompt .= "• Crie urgência sem ser invasivo\n";
         $prompt .= "• Foque nos benefícios para o consumidor\n";
-        $prompt .= "• Use termos como 'IMPERDÍVEL', 'OFERTA LIMITADA', 'PREÇO HISTÓRICO'\n\n";
+        $prompt .= "• Use termos como 'IMPERDÍVEL', 'OFERTA LIMITADA', 'PREÇO HISTÓRICO'\n";
+        $prompt .= "• SEMPRE inclua o link de compra fornecido no post\n\n";
         
-        $prompt .= "🚫 NÃO INCLUA:\n";
-        $prompt .= "• Links (serão adicionados automaticamente)\n";
-        $prompt .= "• Termos duvidosos ou spam\n";
-        $prompt .= "• Informações não confirmadas\n";
-        $prompt .= "• Comparações com concorrentes\n\n";
+        $prompt .= "� INCLUIR LINK (VARIE A APRESENTAÇÃO):\n";
+        $prompt .= "• O link deve ser incluído na mensagem de forma natural e VARIADA\n";
+        $prompt .= "• ALTERNE entre estas opções de call-to-action:\n";
+        $prompt .= "  - '🛒 Compre aqui:'\n";
+        $prompt .= "  - '👇 Garanta o seu:'\n";
+        $prompt .= "  - '🔥 Aproveite:'\n";
+        $prompt .= "  - '⚡ Link direto:'\n";
+        $prompt .= "  - '🎯 Adquira já:'\n";
+        $prompt .= "  - '💥 Oferta aqui:'\n";
+        $prompt .= "  - '🚀 Corre lá:'\n";
+        $prompt .= "  - '✨ Pegue o seu:'\n";
+        $prompt .= "  - '🏃‍♂️ Voa:'\n";
+        $prompt .= "  - '🔗 Link da promoção:'\n";
+        $prompt .= "• VARIE também a posição do link:\n";
+        $prompt .= "  - Às vezes após as características\n";
+        $prompt .= "  - Às vezes antes do call-to-action final\n";
+        $prompt .= "  - Às vezes integrado no meio do texto\n";
+        $prompt .= "• Use SEMPRE emojis diferentes para o link\n";
+        $prompt .= "• Seja criativo na apresentação, mas mantenha o link completo\n\n";
         
-        $prompt .= "💡 EXEMPLOS DE BONS POSTS:\n";
+        $prompt .= "🚫 NÃO FAÇA:\n";
+        $prompt .= "• Não modifique ou encurte o link fornecido\n";
+        $prompt .= "• Não use sempre a mesma apresentação do link\n";
+        $prompt .= "• Não use termos duvidosos ou spam\n";
+        $prompt .= "• Não inclua informações não confirmadas\n";
+        $prompt .= "• Não faça comparações com concorrentes\n\n";
+        
+        $prompt .= "💡 EXEMPLOS DE VARIAÇÕES DO LINK:\n";
+        $prompt .= "Exemplo 1:\n";
         $prompt .= "\"🔥 PREÇO HISTÓRICO! iPhone 15 com 67% OFF\n";
         $prompt .= "✅ Câmera 48MP\n";
         $prompt .= "✅ Chip A17 Pro\n";
-        $prompt .= "✅ Entrega grátis\n";
-        $prompt .= "⚡ CORRE QUE ACABA! #iPhone #Oferta #TechDeals\"\n\n";
+        $prompt .= "🛒 Compre aqui: [LINK]\n";
+        $prompt .= "⚡ CORRE QUE ACABA! #iPhone\"\n\n";
         
-        $prompt .= "\"🎮 GAMER, BORA! Headset HyperX 45% OFF\n";
+        $prompt .= "Exemplo 2:\n";
+        $prompt .= "\"🎮 GAMER, CHEGOU A HORA!\n";
+        $prompt .= "✅ Headset HyperX 45% OFF\n";
+        $prompt .= "🔥 Aproveite: [LINK]\n";
         $prompt .= "✅ Som surround 7.1\n";
-        $prompt .= "✅ Microfone removível\n";
-        $prompt .= "✅ Compatível PC/Console\n";
-        $prompt .= "🎯 Última chance! #Gaming #Headset #Promo\"\n\n";
+        $prompt .= "🎯 Última chance! #Gaming\"\n\n";
         
-        $prompt .= "Agora crie um post seguindo exatamente esse padrão para a promoção informada:";
+        $prompt .= "Exemplo 3:\n";
+        $prompt .= "\"✨ Echo Dot com desconto INSANO!\n";
+        $prompt .= "✅ Alexa integrada\n";
+        $prompt .= "✅ Casa inteligente\n";
+        $prompt .= "⚡ Link direto: [LINK]\n";
+        $prompt .= "💥 Voando! #SmartHome\"\n\n";
+        
+        $prompt .= "Agora crie um post VARIANDO a apresentação do link e seguindo esse padrão para a promoção informada:";
 
         return $prompt;
     }

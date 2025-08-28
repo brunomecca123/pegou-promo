@@ -127,7 +127,7 @@
 
                                             <!-- Post gerado -->
                                             @if($promotion->gemini_generated_post)
-                                                <div class="mt-3 p-3 bg-gray-50 rounded">
+                                                <div class="mt-3 p-3 border border-gray-200 rounded">
                                                     <h4 class="font-semibold text-sm mb-2">Post Gerado pela IA:</h4>
                                                     <div class="text-sm whitespace-pre-wrap">{{ $promotion->gemini_generated_post }}</div>
                                                 </div>

@@ -23,16 +23,28 @@ class TelegramService
             // Se tem post gerado pela IA, usar ele
             if (!empty($promotion->gemini_generated_post)) {
                 $text = $this->formatAIGeneratedPost($promotion);
+
+                // Verificar se o post da IA já contém um link
+                $hasLinkInPost = str_contains($text, 'http') || str_contains($text, 'amazon.com');
+
+                // Se não tem link no post da IA, adicionar link de afiliado
+                if (!$hasLinkInPost) {
+                    if (!empty($promotion->affiliate_url)) {
+                        $text .= "\n\n🔗 <a href='{$promotion->affiliate_url}'>COMPRAR AGORA</a>";
+                    } elseif (!empty($promotion->url)) {
+                        $text .= "\n\n🔗 <a href='{$promotion->url}'>VER PROMOÇÃO</a>";
+                    }
+                }
             } else {
                 // Fallback para formato manual
                 $text = $this->formatManualPost($promotion);
-            }
 
-            // Adicionar link de afiliado
-            if (!empty($promotion->affiliate_url)) {
-                $text .= "\n\n🔗 <a href='{$promotion->affiliate_url}'>COMPRAR AGORA</a>";
-            } elseif (!empty($promotion->url)) {
-                $text .= "\n\n🔗 <a href='{$promotion->url}'>VER PROMOÇÃO</a>";
+                // Sempre adicionar link no formato manual
+                if (!empty($promotion->affiliate_url)) {
+                    $text .= "\n\n🔗 <a href='{$promotion->affiliate_url}'>COMPRAR AGORA</a>";
+                } elseif (!empty($promotion->url)) {
+                    $text .= "\n\n🔗 <a href='{$promotion->url}'>VER PROMOÇÃO</a>";
+                }
             }
 
             // Adicionar canal de origem
